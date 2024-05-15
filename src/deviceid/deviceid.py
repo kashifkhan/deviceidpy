@@ -1,7 +1,8 @@
 import platform
+from typing import Optional
 import uuid
 
-from src.deviceid.store import Store
+from store import Store
 
 
 class DeviceID:
@@ -10,12 +11,14 @@ class DeviceID:
 
     
     def get_device_id(self) -> str:
-        try:
-            return self.store.retrieve_id()
-        except Exception:
-            pass
+        device_id: Optional[str]  = None
+        
+        device_id = self.store.retrieve_id()
 
-        device_id: str = str(uuid.uuid4()).lower()
+        if device_id is not None:
+            return device_id
+        
+        device_id = str(uuid.uuid4()).lower()
 
         # store the id
 
@@ -23,3 +26,6 @@ class DeviceID:
 
         return device_id
 
+
+
+k = print(DeviceID().get_device_id())
