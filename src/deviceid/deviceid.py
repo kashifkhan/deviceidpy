@@ -13,14 +13,13 @@ class DeviceID:
     def get_device_id(self) -> str:
         device_id: Optional[str]  = None
         
-        device_id = self.store.retrieve_id()
-
-        if device_id is not None:
+        try:
+            device_id = self.store.retrieve_id()
             return device_id
-        
-        device_id = str(uuid.uuid4()).lower()
+        except (OSError, FileExistsError) as oex:
+            pass
 
-        # store the id
+        device_id = str(uuid.uuid4()).lower()
 
         self.store.store_id(device_id)
 
@@ -29,3 +28,6 @@ class DeviceID:
 
 
 k = print(DeviceID().get_device_id())
+
+
+
