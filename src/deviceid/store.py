@@ -49,7 +49,7 @@ class Store:
     def _read_from_registry(self) -> str:
         import winreg
 
-        device_id: str # RUN on py3.8, ALPINE and 
+        device_id: str
             
         try:
             with winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, REGISTRY_PATH, reserved=0, access=winreg.KEY_READ | winreg.KEY_WOW64_64KEY ) as key_handle:
