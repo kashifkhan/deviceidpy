@@ -1,33 +1,44 @@
-import platform
-from typing import Optional
+import logging
 import uuid
 
-from store import Store
-
-
-class DeviceID:
-    def __init__(self):
-        self.store = Store()
-
+from ._store import Store
     
-    def get_device_id(self) -> str:
-        device_id: Optional[str]  = None
-        
-        try:
-            device_id = self.store.retrieve_id()
-            return device_id
-        except (OSError, FileExistsError) as oex:
-            pass
+def get_device_id(*, full_trace: bool = False) -> str:
+    """
+    Get the device id in the format 0000- from the store location or create a new one if it does not exist.
+    An empty string is returned if an error occurs during saving or retrieval of the device id.
+    Linux id location: $XDG_CACHE_HOME/deviceid if defined else $HOME/.cache/deviceid
+    MacOS id location: $HOME/Library/Application Support/Microsoft/DeveloperTools/deviceid
+    Windows id location: HKEY_CURRENT_USER\SOFTWARE\Microsoft\DeveloperTools\deviceid
+    :keyword full_trace: If True, the full stack trace is logged. Default is False.
+    :return: The device id.
+    :rtype: str
+    """
 
-        device_id = str(uuid.uuid4()).lower()
-
-        self.store.store_id(device_id)
-
+    device_id: str = ""
+    store = Store()
+    
+    try:
+        device_id = store.retrieve_id()
         return device_id
+    except (PermissionError, ValueError, NotImplementedError) as ferr:
+        if full_trace:
+            logging.getLogger(__name__).exception(ferr)
+        return device_id
+    except Exception as e:
+        if full_trace:
+            logging.getLogger(__name__).exception(e)
 
+    device_id = str(uuid.uuid4()).lower()
 
+    try:
+        store.store_id(device_id)
+    except Exception as e:
+        if full_trace:
+            logging.getLogger(__name__).exception(e)
+        device_id = ""
 
-k = print(DeviceID().get_device_id())
+    return device_id
 
 
 
