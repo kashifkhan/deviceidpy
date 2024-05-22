@@ -8,21 +8,12 @@ REGISTRY_KEY = 'deviceid'
 DEVICEID_LOCATION = 'Microsoft/DeveloperTools/deviceid'
 
 class Store:
-    def __new__(cls) -> 'Store':
-        os_name: str = platform.system()
-        if os_name in ('Windows'):
-            return WindowsStore()
-        
-        if os_name not in ('Darwin', 'Linux'):
-            raise NotImplementedError(f'OS {os_name} is not supported')
-        
-        return super().__new__(cls)
-    
     def __init__(self) -> None:
-        self._os_name: str = platform.system()
+        self._file_path: Path = self._build_path()
     
     def _build_path(self) -> Path:
-        if self._os_name in ('Darwin'):
+        os_name = platform.system()
+        if os_name in ('Darwin'):
             home = os.getenv('HOME')
             if home is None:
                 raise ValueError('HOME environment variable not set')
@@ -43,13 +34,12 @@ class Store:
         :rtype: str
         """
         device_id: str = ""
-        file_path = self._build_path()
             
         # check if file doesnt exist and raise an Exception
-        if not file_path.is_file():
-            raise FileExistsError(f'File {file_path.stem} does not exist')
+        if not self._file_path.is_file():
+            raise FileExistsError(f'File {self._file_path.stem} does not exist')
             
-        device_id = file_path.read_text(encoding='utf-8')
+        device_id = self._file_path.read_text(encoding='utf-8')
         return device_id
     
     def store_id(self, device_id: str) -> None:
@@ -58,19 +48,17 @@ class Store:
         :param str device_id: The device id to store.
         :type device_id: str
         """
-        file_path = self._build_path()
-
         # create the folder location if it does not exist
         try:
-            file_path.parent.mkdir(parents=True)
+            self._file_path.parent.mkdir(parents=True)
         except FileExistsError:
             pass
 
-        file_path.touch()
-        file_path.write_text(device_id, encoding='utf-8')
+        self._file_path.touch()
+        self._file_path.write_text(device_id, encoding='utf-8')
                 
 
-class WindowsStore(Store):
+class WindowsStore():
     def retrieve_id(self) -> str:
         """
         Retrieve the device id from the windows registry.
@@ -89,7 +77,7 @@ class WindowsStore(Store):
     def store_id(self, device_id: str) -> None:
         """
         Store the device id in the windows registry.
-        :param str device_id: The device id to store.
+        :param str device_id: The device id to sstore.
         """
         import winreg
             

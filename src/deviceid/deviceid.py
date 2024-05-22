@@ -1,7 +1,9 @@
 import logging
 import uuid
+import platform
+from typing import Union
 
-from ._store import Store
+from ._store import Store, WindowsStore
     
 def get_device_id(*, full_trace: bool = False) -> str:
     """
@@ -16,7 +18,14 @@ def get_device_id(*, full_trace: bool = False) -> str:
     """
 
     device_id: str = ""
-    store = Store()
+    store: Union[Store, WindowsStore]
+
+    if platform.system() == 'Windows':
+        store = WindowsStore()
+    elif platform.system() in ('Linux','Darwin'):
+        store = Store()
+    else:
+        return device_id
     
     try:
         device_id = store.retrieve_id()
