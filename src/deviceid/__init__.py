@@ -1,5 +1,3 @@
-from .store import Store
+from .deviceid import get_device_id
 
-__all__ = [
-    'Store'
-]
+__all__ = ['get_device_id']
