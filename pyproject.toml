@@ -1,0 +1,17 @@
+[project]
+name = "deviceidpy"
+version = "0.1.0"
+authors = [{name = "Microsoft Corporation"}]
+description = "A simple library to get or create a unique device id for a device."
+classifiers = [
+  "Development Status :: 3 - Production/Alpha",
+  "Programming Language :: Python :: 3:: Only",
+  'Programming Language :: Python :: 3',
+  'Programming Language :: Python :: 3.8',
+  'Programming Language :: Python :: 3.9',
+  'Programming Language :: Python :: 3.10',
+  'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: 3.12',
+  'License :: OSI Approved :: MIT License',
+]
+requires-python = ">=3.8"
