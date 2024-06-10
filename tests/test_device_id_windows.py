@@ -26,7 +26,7 @@ def test_get_devide_id_confirm_location():
     device_id = get_device_id()
 
     with winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, REGISTRY_PATH, reserved=0, access=winreg.KEY_READ | winreg.KEY_WOW64_64KEY ) as key_handle:
-        manual_device_id = winreg.QueryValueEx(key_handle, REGISTRY_KEY)
+        manual_device_id = winreg.QueryValueEx(key_handle, REGISTRY_KEY)[0]
     
     assert device_id == manual_device_id
 

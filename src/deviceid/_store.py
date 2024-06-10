@@ -3,9 +3,9 @@ from pathlib import Path
 import os
 
 
-REGISTRY_PATH = 'SOFTWARE\Microsoft\DeveloperTools'
+REGISTRY_PATH = r'SOFTWARE\Microsoft\DeveloperTools'
 REGISTRY_KEY = 'deviceid'
-DEVICEID_LOCATION = 'Microsoft/DeveloperTools/deviceid'
+DEVICEID_LOCATION = r'Microsoft/DeveloperTools/deviceid'
 
 class Store:
     def __init__(self) -> None:
