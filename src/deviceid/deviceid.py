@@ -19,15 +19,14 @@ def get_device_id(*, full_trace: bool = False) -> str:
 
     device_id: str = ""
     store: Union[Store, WindowsStore]
-
-    if platform.system() == 'Windows':
-        store = WindowsStore()
-    elif platform.system() in ('Linux','Darwin'):
-        store = Store()
-    else:
-        return device_id
     
     try:
+        if platform.system() == 'Windows':
+            store = WindowsStore()
+        elif platform.system() in ('Linux','Darwin'):
+            store = Store()
+        else:
+            return device_id
         device_id = store.retrieve_id()
         return device_id
     except (PermissionError, ValueError, NotImplementedError) as ferr:
